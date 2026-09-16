@@ -1,5 +1,9 @@
+import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
+import seaborn as sns
 from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import confusion_matrix
 from sklearn.preprocessing import StandardScaler
 
 # 1. Cargar datos de entrenamiento
@@ -22,7 +26,6 @@ modelo_ecommerce.fit(X_train_scaled, y_train)
 # 4. Cargar y transformar clientes nuevos
 df_nuevos = pd.read_csv("Practicas/data_eccomerce.csv")
 X_nuevos = df_nuevos[columnas_features]
-
 X_nuevos_scaled = scaler.transform(X_nuevos)
 
 # 5. Generar predicciones
@@ -32,3 +35,23 @@ df_nuevos["probabilidad_%"] = (
 ).round(2)
 
 print(df_nuevos)
+
+# Matriz de confusión
+y_train_pred = modelo_ecommerce.predict(X_train_scaled)
+
+matriz = confusion_matrix(y_train, y_train_pred)
+
+plt.figure(figsize=(6, 4))
+sns.heatmap(
+    matriz,
+    annot=True,
+    fmt="d",
+    cmap="Blues",
+    xticklabels=["No Compra", "Compra"],
+    yticklabels=["No Compra", "Compra"],
+)
+
+plt.xlabel("Predicción del modelo")
+plt.ylabel("Clase real")
+plt.title("Matriz de Confusión - Modelo de E-commerce")
+plt.show()
